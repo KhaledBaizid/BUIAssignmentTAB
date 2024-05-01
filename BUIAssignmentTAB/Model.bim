@@ -99,101 +99,62 @@
               ]
             }
           }
-        ]
-      },
-      {
-        "name": "Date",
-        "columns": [
-          {
-            "name": "Date",
-            "dataType": "dateTime",
-            "sourceColumn": "Date"
-          },
-          {
-            "name": "Day Number",
-            "dataType": "int64",
-            "sourceColumn": "Day Number"
-          },
-          {
-            "name": "Day",
-            "dataType": "string",
-            "sourceColumn": "Day"
-          },
-          {
-            "name": "Month",
-            "dataType": "string",
-            "sourceColumn": "Month"
-          },
-          {
-            "name": "Short Month",
-            "dataType": "string",
-            "sourceColumn": "Short Month"
-          },
-          {
-            "name": "Calendar Month Number",
-            "dataType": "int64",
-            "sourceColumn": "Calendar Month Number"
-          },
-          {
-            "name": "Calendar Month Label",
-            "dataType": "string",
-            "sourceColumn": "Calendar Month Label"
-          },
-          {
-            "name": "Calendar Year",
-            "dataType": "int64",
-            "sourceColumn": "Calendar Year"
-          },
-          {
-            "name": "Calendar Year Label",
-            "dataType": "string",
-            "sourceColumn": "Calendar Year Label"
-          },
-          {
-            "name": "Fiscal Month Number",
-            "dataType": "int64",
-            "sourceColumn": "Fiscal Month Number"
-          },
-          {
-            "name": "Fiscal Month Label",
-            "dataType": "string",
-            "sourceColumn": "Fiscal Month Label"
-          },
-          {
-            "name": "Fiscal Year",
-            "dataType": "int64",
-            "sourceColumn": "Fiscal Year"
-          },
-          {
-            "name": "Fiscal Year Label",
-            "dataType": "string",
-            "sourceColumn": "Fiscal Year Label"
-          },
-          {
-            "name": "ISO Week Number",
-            "dataType": "int64",
-            "sourceColumn": "ISO Week Number"
-          },
-          {
-            "name": "Today",
-            "dataType": "int64",
-            "sourceColumn": "Today"
-          }
         ],
-        "partitions": [
+        "hierarchies": [
           {
-            "name": "Partition",
-            "dataView": "full",
-            "source": {
-              "type": "m",
-              "expression": [
-                "let",
-                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
-                "    Cube_Date = Source{[Schema=\"Cube\",Item=\"Date\"]}[Data]",
-                "in",
-                "    Cube_Date"
-              ]
-            }
+            "name": "Geography",
+            "levels": [
+              {
+                "name": "Continent",
+                "ordinal": 0,
+                "column": "Continent"
+              },
+              {
+                "name": "Country",
+                "ordinal": 1,
+                "column": "Country"
+              },
+              {
+                "name": "State Province",
+                "ordinal": 2,
+                "column": "State Province"
+              },
+              {
+                "name": "City",
+                "ordinal": 3,
+                "column": "City"
+              }
+            ]
+          },
+          {
+            "name": "Sales Region",
+            "levels": [
+              {
+                "name": "Region",
+                "ordinal": 0,
+                "column": "Region"
+              },
+              {
+                "name": "Subregion",
+                "ordinal": 1,
+                "column": "Subregion"
+              },
+              {
+                "name": "Sales Territory",
+                "ordinal": 2,
+                "column": "Sales Territory"
+              },
+              {
+                "name": "State Province",
+                "ordinal": 3,
+                "column": "State Province"
+              },
+              {
+                "name": "City",
+                "ordinal": 4,
+                "column": "City"
+              }
+            ]
           }
         ]
       },
@@ -316,6 +277,23 @@
               ]
             }
           }
+        ],
+        "hierarchies": [
+          {
+            "name": "Item Brand",
+            "levels": [
+              {
+                "name": "Brand",
+                "ordinal": 0,
+                "column": "Brand"
+              },
+              {
+                "name": "Stock Item",
+                "ordinal": 1,
+                "column": "Stock Item"
+              }
+            ]
+          }
         ]
       },
       {
@@ -411,6 +389,23 @@
                 "    #\"Cube_Item-Current\""
               ]
             }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Current Item Brand",
+            "levels": [
+              {
+                "name": "Brand",
+                "ordinal": 0,
+                "column": "Brand"
+              },
+              {
+                "name": "Stock Item",
+                "ordinal": 1,
+                "column": "Stock Item"
+              }
+            ]
           }
         ]
       },
@@ -535,23 +530,117 @@
         ],
         "partitions": [
           {
-            "name": "Partition",
-            "dataView": "full",
+            "name": "Partition 2014",
             "source": {
               "type": "m",
               "expression": [
                 "let",
                 "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
-                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data]",
+                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2014, 1, 1) and [Invoice Date Key] <= #date(2014, 12, 31))",
                 "in",
-                "    #\"Cube_Sales Performance\""
+                "    #\"Filtered Rows\""
               ]
-            }
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
+                  "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                  "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                  "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2014, 1, 1) and [Invoice Date Key] <= #date(2014, 12, 31))",
+                  "in",
+                  "    #\"Filtered Rows\"</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Partition 2013",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] < #date(2014, 1, 1))",
+                "in",
+                "    #\"Filtered Rows\""
+              ]
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
+                  "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                  "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                  "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] < #date(2014, 1, 1))",
+                  "in",
+                  "    #\"Filtered Rows\"</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Partition 2015",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2015, 1, 1) and [Invoice Date Key] <= #date(2015, 12, 31))",
+                "in",
+                "    #\"Filtered Rows\""
+              ]
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
+                  "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                  "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                  "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2015, 1, 1) and [Invoice Date Key] <= #date(2015, 12, 31))",
+                  "in",
+                  "    #\"Filtered Rows\"</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Partition 2016",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2016, 1, 1))",
+                "in",
+                "    #\"Filtered Rows\""
+              ]
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
+                  "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                  "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data],",
+                  "    #\"Filtered Rows\" = Table.SelectRows(#\"Cube_Sales Performance\", each [Invoice Date Key] >= #date(2016, 1, 1))",
+                  "in",
+                  "    #\"Filtered Rows\"</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
           }
         ],
         "measures": [
           {
-            "name": "Sum of Profit",
+            "name": "Total  Profit",
             "expression": "SUM([Profit])",
             "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
             "annotations": [
@@ -562,7 +651,7 @@
             ]
           },
           {
-            "name": "Sum of Quantity",
+            "name": "Total  Quantity of Items",
             "expression": "SUM([Quantity])",
             "formatString": "0,0"
           }
@@ -620,56 +709,188 @@
             "formatString": "0.00%;-0.00%;0.00%"
           },
           {
-            "name": "%  Quatity by Emplyee",
+            "name": "% of total items by Emplyee",
             "expression": " DIVIDE(SUM('Sales Performance'[Quantity]), CALCULATE( SUM('Sales Performance'[Quantity]), ALL('Salesperson-Current') )) ",
             "formatString": "0.00%;-0.00%;0.00%"
+          }
+        ]
+      },
+      {
+        "name": "Date",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "Date"
+          },
+          {
+            "name": "Day Number",
+            "dataType": "int64",
+            "sourceColumn": "Day Number"
+          },
+          {
+            "name": "Day",
+            "dataType": "string",
+            "sourceColumn": "Day"
+          },
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month"
+          },
+          {
+            "name": "Short Month",
+            "dataType": "string",
+            "sourceColumn": "Short Month"
+          },
+          {
+            "name": "Calendar Month Number",
+            "dataType": "int64",
+            "sourceColumn": "Calendar Month Number"
+          },
+          {
+            "name": "Calendar Month Label",
+            "dataType": "string",
+            "sourceColumn": "Calendar Month Label"
+          },
+          {
+            "name": "Calendar Year",
+            "dataType": "int64",
+            "sourceColumn": "Calendar Year"
+          },
+          {
+            "name": "Calendar Year Label",
+            "dataType": "string",
+            "sourceColumn": "Calendar Year Label"
+          },
+          {
+            "name": "Fiscal Month Number",
+            "dataType": "int64",
+            "sourceColumn": "Fiscal Month Number"
+          },
+          {
+            "name": "Fiscal Month Label",
+            "dataType": "string",
+            "sourceColumn": "Fiscal Month Label"
+          },
+          {
+            "name": "Fiscal Year",
+            "dataType": "int64",
+            "sourceColumn": "Fiscal Year"
+          },
+          {
+            "name": "Fiscal Year Label",
+            "dataType": "string",
+            "sourceColumn": "Fiscal Year Label"
+          },
+          {
+            "name": "ISO Week Number",
+            "dataType": "int64",
+            "sourceColumn": "ISO Week Number"
+          },
+          {
+            "name": "Today",
+            "dataType": "int64",
+            "sourceColumn": "Today"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                "    Cube_Date = Source{[Schema=\"Cube\",Item=\"Date\"]}[Data]",
+                "in",
+                "    Cube_Date"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Calendar",
+            "levels": [
+              {
+                "name": "Calendar Year Label",
+                "ordinal": 0,
+                "column": "Calendar Year Label"
+              },
+              {
+                "name": "Fiscal Month Label",
+                "ordinal": 1,
+                "column": "Fiscal Month Label"
+              },
+              {
+                "name": "Date",
+                "ordinal": 2,
+                "column": "Date"
+              }
+            ]
+          },
+          {
+            "name": "Fiscal",
+            "levels": [
+              {
+                "name": "Fiscal Year Label",
+                "ordinal": 1,
+                "column": "Fiscal Year Label"
+              },
+              {
+                "name": "Fiscal Month Label",
+                "ordinal": 0,
+                "column": "Fiscal Month Label"
+              },
+              {
+                "name": "Date",
+                "ordinal": 2,
+                "column": "Date"
+              }
+            ]
           }
         ]
       }
     ],
     "relationships": [
       {
-        "name": "9805553c-54f3-4685-85da-23c691654fc6",
+        "name": "12990720-46f5-4994-8f14-501ee59eea05",
         "fromTable": "Sales Performance",
         "fromColumn": "City Key",
         "toTable": "City",
         "toColumn": "City Key"
       },
       {
-        "name": "ed705998-c487-43a6-bd05-3afa2476f54a",
+        "name": "f6f3f27d-78df-4c81-b857-b0e0a4c275c1",
         "fromTable": "Sales Performance",
         "fromColumn": "Stock Item Key",
         "toTable": "Item",
         "toColumn": "Stock Item Key"
       },
       {
-        "name": "d7b14fd5-e66c-4be7-be8a-b5d528a6b571",
+        "name": "738c29cf-c03e-49f0-96bc-a934d1360789",
         "fromTable": "Sales Performance",
         "fromColumn": "WWI Stock Item ID",
         "toTable": "Item-Current",
         "toColumn": "WWI Stock Item ID"
       },
       {
-        "name": "f474fb86-0293-40e5-8146-0d36334a4213",
-        "fromTable": "Sales Performance",
-        "fromColumn": "Invoice Date Key",
-        "toTable": "Date",
-        "toColumn": "Date"
-      },
-      {
-        "name": "01147b0e-d166-48fb-8e7b-57145f6ca257",
-        "fromTable": "Sales Performance",
-        "fromColumn": "Delivery Date Key",
-        "toTable": "Date",
-        "toColumn": "Date",
-        "isActive": false
-      },
-      {
-        "name": "fc899a25-da6f-42c7-853c-24c0de564b4f",
+        "name": "f1cfa84b-9696-4913-aac7-0f0da23d6fc2",
         "fromTable": "Sales Performance",
         "fromColumn": "WWI Employee ID",
         "toTable": "Salesperson-Current",
         "toColumn": "WWI Employee ID"
+      },
+      {
+        "name": "9276d44b-f62a-4507-af47-fca0b99d4adc",
+        "fromTable": "Sales Performance",
+        "fromColumn": "Invoice Date Key",
+        "toTable": "Date",
+        "toColumn": "Date"
       }
     ],
     "annotations": [
