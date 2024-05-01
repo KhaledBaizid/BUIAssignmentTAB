@@ -103,12 +103,10 @@
       },
       {
         "name": "Date",
-        "dataCategory": "Time",
         "columns": [
           {
             "name": "Date",
             "dataType": "dateTime",
-            "isKey": true,
             "sourceColumn": "Date"
           },
           {
@@ -417,71 +415,7 @@
         ]
       },
       {
-        "name": "Salesperson-Current",
-        "columns": [
-          {
-            "name": "WWI Employee ID",
-            "dataType": "int64",
-            "sourceColumn": "WWI Employee ID"
-          },
-          {
-            "name": "Employee",
-            "dataType": "string",
-            "sourceColumn": "Employee"
-          },
-          {
-            "name": "Preferred Name",
-            "dataType": "string",
-            "sourceColumn": "Preferred Name"
-          },
-          {
-            "name": "Last Name",
-            "dataType": "string",
-            "sourceColumn": "Last Name"
-          },
-          {
-            "name": "First Name",
-            "dataType": "string",
-            "sourceColumn": "First Name"
-          }
-        ],
-        "partitions": [
-          {
-            "name": "Partition",
-            "dataView": "full",
-            "source": {
-              "type": "m",
-              "expression": [
-                "let",
-                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
-                "    #\"Cube_Salesperson-Current\" = Source{[Schema=\"Cube\",Item=\"Salesperson-Current\"]}[Data]",
-                "in",
-                "    #\"Cube_Salesperson-Current\""
-              ]
-            }
-          }
-        ],
-        "measures": [
-          {
-            "name": "Total profit of Kayla Woodcock",
-            "expression": "SUMX('SalesPerformance',IF(RELATED('Salesperson-Current'[WWI Employee ID])=2,SalesPerformance[Profit],0))",
-            "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
-            "annotations": [
-              {
-                "name": "Format",
-                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"1\" /></Format>"
-              }
-            ]
-          },
-          {
-            "name": "% profit of Kayla Woodcock",
-            "expression": "[Total profit of Kayla Woodcock]/[Total of Profit]",
-            "formatString": "0.00%;-0.00%;0.00%"
-          }
-        ]
-      },
-      {
-        "name": "SalesPerformance",
+        "name": "Sales Performance",
         "columns": [
           {
             "name": "Sale Key",
@@ -608,16 +542,16 @@
               "expression": [
                 "let",
                 "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
-                "    Cube_SalesPerformance = Source{[Schema=\"Cube\",Item=\"SalesPerformance\"]}[Data]",
+                "    #\"Cube_Sales Performance\" = Source{[Schema=\"Cube\",Item=\"Sales Performance\"]}[Data]",
                 "in",
-                "    Cube_SalesPerformance"
+                "    #\"Cube_Sales Performance\""
               ]
             }
           }
         ],
         "measures": [
           {
-            "name": "Total of Profit",
+            "name": "Sum of Profit",
             "expression": "SUM([Profit])",
             "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
             "annotations": [
@@ -628,8 +562,66 @@
             ]
           },
           {
+            "name": "Sum of Quantity",
+            "expression": "SUM([Quantity])",
+            "formatString": "0,0"
+          }
+        ]
+      },
+      {
+        "name": "Salesperson-Current",
+        "columns": [
+          {
+            "name": "WWI Employee ID",
+            "dataType": "int64",
+            "sourceColumn": "WWI Employee ID"
+          },
+          {
+            "name": "Employee",
+            "dataType": "string",
+            "sourceColumn": "Employee"
+          },
+          {
+            "name": "Preferred Name",
+            "dataType": "string",
+            "sourceColumn": "Preferred Name"
+          },
+          {
+            "name": "Last Name",
+            "dataType": "string",
+            "sourceColumn": "Last Name"
+          },
+          {
+            "name": "First Name",
+            "dataType": "string",
+            "sourceColumn": "First Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/BOOK-N9O1STNGVT;WideWorldImportersDW\",",
+                "    #\"Cube_Salesperson-Current\" = Source{[Schema=\"Cube\",Item=\"Salesperson-Current\"]}[Data]",
+                "in",
+                "    #\"Cube_Salesperson-Current\""
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
             "name": "% of Profit by Emplyee",
-            "expression": " DIVIDE(SUM('SalesPerformance'[Profit]), CALCULATE( SUM('SalesPerformance'[Profit]), ALL('Salesperson-Current') )) ",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('Salesperson-Current') )) ",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "%  Quatity by Emplyee",
+            "expression": " DIVIDE(SUM('Sales Performance'[Quantity]), CALCULATE( SUM('Sales Performance'[Quantity]), ALL('Salesperson-Current') )) ",
             "formatString": "0.00%;-0.00%;0.00%"
           }
         ]
@@ -637,47 +629,47 @@
     ],
     "relationships": [
       {
-        "name": "79cd8178-9078-4b83-9813-29cba24c7639",
-        "fromTable": "SalesPerformance",
-        "fromColumn": "WWI Employee ID",
-        "toTable": "Salesperson-Current",
-        "toColumn": "WWI Employee ID"
-      },
-      {
-        "name": "104c4b70-986f-402b-87f1-80c6e87ea5c8",
-        "fromTable": "SalesPerformance",
+        "name": "9805553c-54f3-4685-85da-23c691654fc6",
+        "fromTable": "Sales Performance",
         "fromColumn": "City Key",
         "toTable": "City",
         "toColumn": "City Key"
       },
       {
-        "name": "800909ea-dfb3-40dc-be2e-7e5e8180f0a5",
-        "fromTable": "SalesPerformance",
+        "name": "ed705998-c487-43a6-bd05-3afa2476f54a",
+        "fromTable": "Sales Performance",
         "fromColumn": "Stock Item Key",
         "toTable": "Item",
         "toColumn": "Stock Item Key"
       },
       {
-        "name": "ae33b717-58f9-49c1-96ba-ac7b11558b28",
-        "fromTable": "SalesPerformance",
+        "name": "d7b14fd5-e66c-4be7-be8a-b5d528a6b571",
+        "fromTable": "Sales Performance",
         "fromColumn": "WWI Stock Item ID",
         "toTable": "Item-Current",
         "toColumn": "WWI Stock Item ID"
       },
       {
-        "name": "03f5294b-9376-47a9-9517-4c16c70056d4",
-        "fromTable": "SalesPerformance",
+        "name": "f474fb86-0293-40e5-8146-0d36334a4213",
+        "fromTable": "Sales Performance",
         "fromColumn": "Invoice Date Key",
         "toTable": "Date",
         "toColumn": "Date"
       },
       {
-        "name": "baa6ea58-8694-4644-b27b-6930e7175e1e",
-        "fromTable": "SalesPerformance",
+        "name": "01147b0e-d166-48fb-8e7b-57145f6ca257",
+        "fromTable": "Sales Performance",
         "fromColumn": "Delivery Date Key",
         "toTable": "Date",
         "toColumn": "Date",
         "isActive": false
+      },
+      {
+        "name": "fc899a25-da6f-42c7-853c-24c0de564b4f",
+        "fromTable": "Sales Performance",
+        "fromColumn": "WWI Employee ID",
+        "toTable": "Salesperson-Current",
+        "toColumn": "WWI Employee ID"
       }
     ],
     "annotations": [
