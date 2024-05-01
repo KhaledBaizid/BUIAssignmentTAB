@@ -3,6 +3,7 @@
   "compatibilityLevel": 1500,
   "model": {
     "culture": "en-US",
+    "discourageImplicitMeasures": true,
     "dataSources": [
       {
         "type": "structured",
@@ -98,6 +99,43 @@
                 "    Cube_City"
               ]
             }
+          }
+        ],
+        "measures": [
+          {
+            "name": "% of Profit by City",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[City]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by State Province",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[State Province]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by Country",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Country]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by Ciontinent",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Continent]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by Sales Territory",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Sales Territory]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by Subregion",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Subregion]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "% of Profit by Region",
+            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Region]) ))",
+            "formatString": "0.00%;-0.00%;0.00%"
           }
         ],
         "hierarchies": [
@@ -654,6 +692,17 @@
             "name": "Total  Quantity of Items",
             "expression": "SUM([Quantity])",
             "formatString": "0,0"
+          },
+          {
+            "name": "Average of Profit",
+            "expression": "AVERAGE([Profit])",
+            "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"1\" /></Format>"
+              }
+            ]
           }
         ]
       },
@@ -706,7 +755,51 @@
           {
             "name": "% of Profit by Emplyee",
             "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('Salesperson-Current') )) ",
-            "formatString": "0.00%;-0.00%;0.00%"
+            "formatString": "0.00%;-0.00%;0.00%",
+            "kpi": {
+              "targetExpression": "0.1",
+              "targetFormatString": "0.00%;-0.00%;0.00%",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Salesperson-Current'[% of Profit by Emplyee] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.097,-1,",
+                "\t                If(x<0.1,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "0.097"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "0.1"
+                }
+              ]
+            }
           },
           {
             "name": "% of total items by Emplyee",
@@ -852,6 +945,45 @@
                 "column": "Date"
               }
             ]
+          }
+        ]
+      },
+      {
+        "name": "Annual Calcs",
+        "calculationGroup": {
+          "precedence": 25,
+          "calculationItems": [
+            {
+              "name": "YTD",
+              "expression": "CALCULATE(SELECTEDMEASURE(),DATESYTD('Date'[Date]))",
+              "ordinal": 2
+            },
+            {
+              "name": "Previuos Year",
+              "expression": "CALCULATE(SELECTEDMEASURE(),PREVIOUSYEAR('Date'[Date]))",
+              "ordinal": 1
+            },
+            {
+              "name": "Next Year",
+              "expression": "CALCULATE(SELECTEDMEASURE(),NEXTYEAR('Date'[Date]))",
+              "ordinal": 3
+            }
+          ]
+        },
+        "columns": [
+          {
+            "name": "Sort Order",
+            "dataType": "string",
+            "sourceColumn": "Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculationGroup 1",
+            "mode": "import",
+            "source": {
+              "type": "calculationGroup"
+            }
           }
         ]
       }
