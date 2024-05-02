@@ -649,7 +649,7 @@
             ]
           },
           {
-            "name": "Partition 2016",
+            "name": "Partition 2016 and Current",
             "source": {
               "type": "m",
               "expression": [
@@ -769,6 +769,14 @@
             "expression": "DIVIDE(Sum('Sales Performance'[Profit]),Sum('Sales Performance'[Quantity]))",
             "formatString": "0.00"
           }
+        ],
+        "hierarchies": [
+          {
+            "name": "Hierarchy1"
+          },
+          {
+            "name": "Hierarchy2"
+          }
         ]
       },
       {
@@ -819,7 +827,10 @@
         "measures": [
           {
             "name": "% of Profit by Emplyee",
-            "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('Salesperson-Current') )) ",
+            "expression": [
+              " DIVIDE(SUM('Sales Performance'[Profit]),",
+              " CALCULATE( SUM('Sales Performance'[Profit]), ALL('Salesperson-Current') )) "
+            ],
             "formatString": "0.00%;-0.00%;0.00%",
             "kpi": {
               "targetExpression": "0.1",
@@ -869,7 +880,51 @@
           {
             "name": "% of total items by Emplyee",
             "expression": " DIVIDE(SUM('Sales Performance'[Quantity]), CALCULATE( SUM('Sales Performance'[Quantity]), ALL('Salesperson-Current') )) ",
-            "formatString": "0.00%;-0.00%;0.00%"
+            "formatString": "0.00%;-0.00%;0.00%",
+            "kpi": {
+              "targetExpression": "0.1",
+              "targetFormatString": "0.00%;-0.00%;0.00%",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Salesperson-Current'[% of total items by Emplyee] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.094,-1,",
+                "\t                If(x<0.098,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "0.094"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "0.098"
+                }
+              ]
+            }
           }
         ]
       },
@@ -1088,6 +1143,14 @@
         "fromColumn": "Invoice Date Key",
         "toTable": "Date",
         "toColumn": "Date"
+      },
+      {
+        "name": "5bbfb026-2f8a-4bbc-ba19-c1fb03e04cf0",
+        "fromTable": "Sales Performance",
+        "fromColumn": "Delivery Date Key",
+        "toTable": "Date",
+        "toColumn": "Date",
+        "isActive": false
       }
     ],
     "annotations": [
