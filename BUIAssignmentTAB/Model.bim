@@ -118,7 +118,7 @@
             "formatString": "0.00%;-0.00%;0.00%"
           },
           {
-            "name": "% of Profit by Ciontinent",
+            "name": "% of Profit by Continent",
             "expression": " DIVIDE(SUM('Sales Performance'[Profit]), CALCULATE( SUM('Sales Performance'[Profit]), ALL('City'[Continent]) ))",
             "formatString": "0.00%;-0.00%;0.00%"
           },
@@ -694,7 +694,7 @@
             "formatString": "0,0"
           },
           {
-            "name": "Average of Profit",
+            "name": "Average Profit per Sale",
             "expression": "AVERAGE([Profit])",
             "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
             "annotations": [
@@ -703,6 +703,71 @@
                 "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"1\" /></Format>"
               }
             ]
+          },
+          {
+            "name": "Sales  Count",
+            "expression": "DISTINCTCOUNT([Sale Key])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Tax  Amount",
+            "expression": "SUM([Tax Amount])",
+            "formatString": "\\$#,0.00;-\\$#,0.00;\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"1\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Average of Tax Rate",
+            "expression": "AVERAGE([Tax Rate])"
+          },
+          {
+            "name": "Total Chiller  Items",
+            "expression": "SUM([Total Chiller Items])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Total Dry  Items",
+            "expression": "SUM([Total Dry Items])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Total Excluding  Tax",
+            "expression": "SUM([Total Excluding Tax])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Total Including  Tax",
+            "expression": "SUM([Total Including Tax])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Unit  Price",
+            "expression": "SUM([Unit Price])",
+            "formatString": "0,0"
+          },
+          {
+            "name": "Average of Quantity",
+            "expression": "AVERAGE([Quantity])",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Average of Total Excluding Tax",
+            "expression": "AVERAGE([Total Excluding Tax])",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Average of Total Including Tax",
+            "expression": "AVERAGE([Total Including Tax])",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Performance",
+            "expression": "DIVIDE(Sum('Sales Performance'[Profit]),Sum('Sales Performance'[Quantity]))",
+            "formatString": "0.00"
           }
         ]
       },
